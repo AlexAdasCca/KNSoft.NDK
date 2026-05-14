@@ -1,0 +1,253 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <!-- Property addon -->
+
+  <PropertyGroup>
+    <IncludePath>$(MSBuildThisFileDirectory)Include;$(IncludePath)</IncludePath>
+  </PropertyGroup>
+
+  <!-- Declare page schema, item names and tasks -->
+
+  <ItemGroup>
+    <PropertyPageSchema Include="$(MSBuildThisFileDirectory)$(MSBuildThisFileName).xml" />
+    <AvailableItemName Include="Precomp4C_LibCreate">
+      <Targets>_Precomp4C_LibCreate</Targets>
+    </AvailableItemName>
+    <AvailableItemName Include="Precomp4C_LibExtract">
+      <Targets>_Precomp4C_LibExtract</Targets>
+    </AvailableItemName>
+    <AvailableItemName Include="Precomp4C_Binary2C">
+      <Targets>_Precomp4C_Binary2C</Targets>
+    </AvailableItemName>
+    <AvailableItemName Include="Precomp4C_I18N">
+      <Targets>_Precomp4C_I18N</Targets>
+    </AvailableItemName>
+  </ItemGroup>
+
+  <UsingTask TaskName="KNSoft.Precomp4C.Task.LibCreate" AssemblyFile="$(MSBuildThisFileDirectory)..\lib\netstandard2.0\$(MSBuildThisFileName).dll" />
+  <UsingTask TaskName="KNSoft.Precomp4C.Task.LibExtract" AssemblyFile="$(MSBuildThisFileDirectory)..\lib\netstandard2.0\$(MSBuildThisFileName).dll" />
+  <UsingTask TaskName="KNSoft.Precomp4C.Task.Binary2C" AssemblyFile="$(MSBuildThisFileDirectory)..\lib\netstandard2.0\$(MSBuildThisFileName).dll" />
+  <UsingTask TaskName="KNSoft.Precomp4C.Task.I18N" AssemblyFile="$(MSBuildThisFileDirectory)..\lib\netstandard2.0\$(MSBuildThisFileName).dll" />
+  <UsingTask TaskName="KNSoft.Precomp4C.Task.Res2C" AssemblyFile="$(MSBuildThisFileDirectory)..\lib\netstandard2.0\$(MSBuildThisFileName).dll" />
+
+  <!-- Extend CleanDependsOn to clean -->
+
+  <PropertyGroup>
+    <CleanDependsOn>$(CleanDependsOn);Precomp4CClean</CleanDependsOn>
+  </PropertyGroup>
+
+  <Target Name="Precomp4CClean">
+    <Delete Files="%(Precomp4C_LibCreate.OutputFile)" />
+    <RemoveDir Directories="%(Precomp4C_LibExtract.OutputDirectory)" />
+    <Delete Files="%(Precomp4C_Binary2C.OutputHeader);%(Precomp4C_Binary2C.OutputSource)" />
+    <Delete Files="%(Precomp4C_I18N.OutputHeader);%(Precomp4C_I18N.OutputSource)" />
+    <Delete Files="%(ResourceCompile.P4COutputHeader);%(ResourceCompile.P4COutputSource)" />
+  </Target>
+
+  <!-- Targets -->
+
+  <Target
+    Name="_Precomp4C_LibCreate"
+    BeforeTargets="$(Precomp4CBeforeTargets)"
+    AfterTargets="$(Precomp4CAfterTargets)"
+    Inputs="%(Precomp4C_LibCreate.Identity);$(MSBuildProjectFile)"
+    Outputs="%(Precomp4C_LibCreate.OutputFile)"
+    DependsOnTargets="_SelectedFiles">
+
+    <ItemGroup Condition="'@(SelectedFiles)' != ''">
+      <Precomp4C_LibCreate Remove="@(Precomp4C_LibCreate)" Condition="'%(Identity)' != '@(SelectedFiles)'" />
+      <Precomp4C_LibCreate_Source Include="@(Precomp4C_LibCreate)" />
+    </ItemGroup>
+
+    <GetOutOfDateItems
+      Condition           = "'$(SelectedFiles)' == ''"
+      Sources             = "@(Precomp4C_LibCreate)"
+      TLogDirectory       = "$(TLogLocation)"
+      TrackFileAccess     = "$(TrackFileAccess)"
+
+      TLogNamePrefix      = "Precomp4C_LibCreate"
+      OutputsMetadataName = "OutputFile">
+      <Output TaskParameter="OutOfDateSources" ItemName="Precomp4C_LibCreate_Source" />
+    </GetOutOfDateItems>
+
+    <Message Condition  = "'@(Precomp4C_LibCreate_Source)' != '' and '%(Precomp4C_LibCreate_Source.ExcludedFromBuild)' != 'true'"
+             Importance = "High"
+             Text       = "Precomp4C LibCreate Task compiling %(Precomp4C_LibCreate_Source.Identity)" />
+
+    <KNSoft.Precomp4C.Task.LibCreate
+        Condition   = "'@(Precomp4C_LibCreate_Source)' != '' and '%(Precomp4C_LibCreate_Source.ExcludedFromBuild)' != 'true'"
+        Source      = "%(Precomp4C_LibCreate_Source.Identity)"
+
+        SearchPaths = "%(Precomp4C_LibCreate_Source.SearchPaths)"
+        OutputFile  = "%(Precomp4C_LibCreate_Source.OutputFile)"
+        Platform    = "$(PlatformTarget)" />
+
+  </Target>
+
+  <Target
+    Name="_Precomp4C_LibExtract"
+    BeforeTargets="$(Precomp4CBeforeTargets)"
+    AfterTargets="$(Precomp4CAfterTargets)"
+    Inputs="%(Precomp4C_LibExtract.Identity);$(MSBuildProjectFile)"
+    Outputs="%(Precomp4C_LibExtract.OutputDirectory)"
+    DependsOnTargets="_SelectedFiles">
+
+    <ItemGroup Condition="'@(SelectedFiles)' != ''">
+      <Precomp4C_LibExtract Remove="@(Precomp4C_LibExtract)" Condition="'%(Identity)' != '@(SelectedFiles)'" />
+      <Precomp4C_LibExtract_Source Include="@(Precomp4C_LibExtract)" />
+    </ItemGroup>
+
+    <GetOutOfDateItems
+      Condition           = "'$(SelectedFiles)' == ''"
+      Sources             = "@(Precomp4C_LibExtract)"
+      TLogDirectory       = "$(TLogLocation)"
+      TrackFileAccess     = "$(TrackFileAccess)"
+
+      TLogNamePrefix      = "Precomp4C_LibExtract"
+      OutputsMetadataName = "OutputFile">
+      <Output TaskParameter="OutOfDateSources" ItemName="Precomp4C_LibExtract_Source" />
+    </GetOutOfDateItems>
+
+    <Message Condition  = "'@(Precomp4C_LibExtract_Source)' != '' and '%(Precomp4C_LibExtract_Source.ExcludedFromBuild)' != 'true'"
+             Importance = "High"
+             Text="Precomp4C LibExtract Task compiling %(Precomp4C_LibExtract_Source.Identity)" />
+
+    <KNSoft.Precomp4C.Task.LibExtract
+        Condition       = "'@(Precomp4C_LibExtract_Source)' != '' and '%(Precomp4C_LibExtract_Source.ExcludedFromBuild)' != 'true'"
+        Source          = "%(Precomp4C_LibExtract_Source.Identity)"
+
+        SearchPaths     = "%(Precomp4C_LibExtract_Source.SearchPaths)"
+        OutputDirectory = "%(Precomp4C_LibExtract_Source.OutputDirectory)"
+        Platform        = "$(PlatformTarget)">
+      <Output TaskParameter="ExtractedFiles" ItemName="Precomp4C_LibExtract_ExtractedFiles"/>
+    </KNSoft.Precomp4C.Task.LibExtract>
+
+    <ItemGroup>
+      <Link Include="@(Precomp4C_LibExtract_ExtractedFiles)"/>
+      <Lib Include="@(Precomp4C_LibExtract_ExtractedFiles)"/>
+      <Obj Include="@(Precomp4C_LibExtract_ExtractedFiles)"/>
+    </ItemGroup>
+
+  </Target>
+
+  <Target
+    Name="_Precomp4C_Binary2C"
+    BeforeTargets="$(Precomp4CBeforeTargets)"
+    AfterTargets="$(Precomp4CAfterTargets)"
+    Inputs="%(Precomp4C_Binary2C.Identity);$(MSBuildProjectFile)"
+    Outputs="%(Precomp4C_Binary2C.OutputHeader);%(Precomp4C_Binary2C.OutputSource)"
+    DependsOnTargets="_SelectedFiles">
+
+    <ItemGroup Condition="'@(SelectedFiles)' != ''">
+      <Precomp4C_Binary2C Remove="@(Precomp4C_Binary2C)" Condition="'%(Identity)' != '@(SelectedFiles)'" />
+      <Precomp4C_Binary2C_Source Include="@(Precomp4C_Binary2C)" />
+    </ItemGroup>
+
+    <GetOutOfDateItems
+      Condition           = "'$(SelectedFiles)' == ''"
+      Sources             = "@(Precomp4C_Binary2C)"
+      TLogDirectory       = "$(TLogLocation)"
+      TrackFileAccess     = "$(TrackFileAccess)"
+
+      TLogNamePrefix      = "Precomp4C_Binary2C_H"
+      OutputsMetadataName = "OutputHeader">
+      <Output TaskParameter="OutOfDateSources" ItemName="Precomp4C_Binary2C_Source" />
+    </GetOutOfDateItems>
+    <GetOutOfDateItems
+      Condition           = "'$(SelectedFiles)' == ''"
+      Sources             = "@(Precomp4C_Binary2C)"
+      TLogDirectory       = "$(TLogLocation)"
+      TrackFileAccess     = "$(TrackFileAccess)"
+
+      TLogNamePrefix      = "Precomp4C_Binary2C_C"
+      OutputsMetadataName = "OutputSource">
+      <Output TaskParameter="OutOfDateSources" ItemName="Precomp4C_Binary2C_Source" />
+    </GetOutOfDateItems>
+
+    <Message Condition  = "'@(Precomp4C_Binary2C_Source)' != '' and '%(Precomp4C_Binary2C_Source.ExcludedFromBuild)' != 'true'"
+             Importance = "High"
+             Text       = "Precomp4C Binary2C Task compiling %(Precomp4C_Binary2C_Source.Identity)" />
+
+    <KNSoft.Precomp4C.Task.Binary2C
+      Condition       = "'@(Precomp4C_Binary2C_Source)' != '' and '%(Precomp4C_Binary2C_Source.ExcludedFromBuild)' != 'true'"
+      Source          = "%(Precomp4C_Binary2C_Source.Identity)"
+
+      OutputHeader    = "%(Precomp4C_Binary2C_Source.OutputHeader)"
+      OutputSource    = "%(Precomp4C_Binary2C_Source.OutputSource)" />
+
+  </Target>
+
+  <Target
+    Name="_Precomp4C_I18N"
+    BeforeTargets="$(Precomp4CBeforeTargets)"
+    AfterTargets="$(Precomp4CAfterTargets)"
+    Inputs="%(Precomp4C_I18N.Identity);$(MSBuildProjectFile)"
+    Outputs="%(Precomp4C_I18N.OutputHeader);%(Precomp4C_I18N.OutputSource)"
+    DependsOnTargets="_SelectedFiles">
+
+    <ItemGroup Condition="'@(SelectedFiles)' != ''">
+      <Precomp4C_I18N Remove="@(Precomp4C_I18N)" Condition="'%(Identity)' != '@(SelectedFiles)'" />
+      <Precomp4C_I18N_Source Include="@(Precomp4C_I18N)" />
+    </ItemGroup>
+
+    <GetOutOfDateItems
+      Condition           = "'$(SelectedFiles)' == ''"
+      Sources             = "@(Precomp4C_I18N)"
+      TLogDirectory       = "$(TLogLocation)"
+      TrackFileAccess     = "$(TrackFileAccess)"
+
+      TLogNamePrefix      = "Precomp4C_I18N_H"
+      OutputsMetadataName = "OutputHeader">
+      <Output TaskParameter="OutOfDateSources" ItemName="Precomp4C_I18N_Source" />
+    </GetOutOfDateItems>
+    <GetOutOfDateItems
+      Condition           = "'$(SelectedFiles)' == ''"
+      Sources             = "@(Precomp4C_I18N)"
+      TLogDirectory       = "$(TLogLocation)"
+      TrackFileAccess     = "$(TrackFileAccess)"
+
+      TLogNamePrefix      = "Precomp4C_I18N_C"
+      OutputsMetadataName = "OutputSource">
+      <Output TaskParameter="OutOfDateSources" ItemName="Precomp4C_I18N_Source" />
+    </GetOutOfDateItems>
+
+    <Message Condition  = "'@(Precomp4C_I18N_Source)' != '' and '%(Precomp4C_I18N_Source.ExcludedFromBuild)' != 'true'"
+             Importance = "High"
+             Text       = "Precomp4C I18N Task compiling %(Precomp4C_I18N_Source.Identity)" />
+
+    <KNSoft.Precomp4C.Task.I18N
+      Condition       = "'@(Precomp4C_I18N_Source)' != '' and '%(Precomp4C_I18N_Source.ExcludedFromBuild)' != 'true'"
+      Source          = "%(Precomp4C_I18N_Source.Identity)"
+
+      OutputHeader    = "%(Precomp4C_I18N_Source.OutputHeader)"
+      OutputSource    = "%(Precomp4C_I18N_Source.OutputSource)" />
+
+  </Target>
+
+  <Target
+    Name="_Precomp4C_Res2C"
+    BeforeTargets="$(Precomp4CBeforeTargets);ComputeRCOutputs"
+    AfterTargets="$(Precomp4CAfterTargets);ResourceCompile"
+    Inputs="%(ResourceCompile.ResourceOutputFileName);$(MSBuildProjectFile)"
+    Outputs="%(ResourceCompile.P4COutputHeader);%(ResourceCompile.P4COutputSource)"
+    DependsOnTargets="ResourceCompile">
+
+    <Message Condition  = "'%(ResourceCompile.ResourceOutputFileName)' != '' and '%(ResourceCompile.ExcludedFromBuild)' != 'true' and '%(ResourceCompile.P4CEnableRes2C)' == 'true'"
+             Importance = "High"
+             Text       = "Precomp4C Res2C Task compiling %(ResourceCompile.ResourceOutputFileName)" />
+
+    <KNSoft.Precomp4C.Task.Res2C
+      Condition       = "'%(ResourceCompile.ResourceOutputFileName)' != '' and '%(ResourceCompile.ExcludedFromBuild)' != 'true' and '%(ResourceCompile.P4CEnableRes2C)' == 'true'"
+      Source          = "%(ResourceCompile.ResourceOutputFileName)"
+
+      OutputHeader    = "%(ResourceCompile.P4COutputHeader)"
+      OutputSource    = "%(ResourceCompile.P4COutputSource)" />
+
+    <ItemGroup Condition="'@(ResourceCompile)' != ''">
+      <ResourceCompile Condition="'%(ResourceCompile.ExcludedFromBuild)' != 'true' and '%(ResourceCompile.P4CEnableRes2C)' == 'true'" Remove="%(ResourceCompile.Identity)" />
+    </ItemGroup>
+
+  </Target>
+
+</Project>

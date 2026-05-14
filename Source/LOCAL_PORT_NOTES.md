@@ -1,10 +1,7 @@
 ## Local Port Notes
 
 This repository is suitable for consumption from external package managers such
-as a vcpkg local port, with one important caveat:
-
-- `KNSoft.NDK` still relies on `KNSoft.Precomp4C` to generate import libraries
-  from the XML definitions under `Source/KNSoft.NDK/WinAPI/`.
+as a vcpkg local port.
 
 Practical implications for downstream packaging:
 
@@ -13,7 +10,16 @@ Practical implications for downstream packaging:
   - `KNSoft.NDK.WinAPI.lib`
   - `KNSoft.NDK.Ntdll.Hash.lib`
   - `KNSoft.NDK.Ntdll.CRT.lib`
-  must also provide a build path for `KNSoft.Precomp4C`.
+  need `KNSoft.Precomp4C` when regenerating these libraries from the XML
+  definitions under `Source/KNSoft.NDK/WinAPI/`.
+
+Current repository layout:
+
+- The native `KNSoft.NDK` build consumes the vendored prebuilt
+  `KNSoft.Precomp4C` artifacts under `Source/3rdParty/KNSoft.Precomp4C`.
+- The managed `SDK` helper is not part of the default solution build. It is a
+  maintenance/codegen helper rather than a required consumer artifact for the
+  NDK package itself.
 
 Default CRT policy:
 

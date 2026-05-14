@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <PropertyGroup Condition="'$(Precomp4CBeforeTargets)' == '' and '$(Precomp4CAfterTargets)' == '' and '$(ConfigurationType)' != 'Makefile'">
+    <Precomp4CBeforeTargets>Midl</Precomp4CBeforeTargets>
+    <Precomp4CAfterTargets>PreBuildEvent</Precomp4CAfterTargets>
+  </PropertyGroup>
+
+  <ItemDefinitionGroup>
+
+    <Precomp4C_LibCreate>
+      <SearchPaths Condition="'%(Precomp4C_LibCreate.SearchPaths)' == ''">$(ProjectDir);$(VCToolsInstallDir)</SearchPaths>
+      <OutputFile Condition="'%(Precomp4C_LibCreate.OutputFile)' == ''">$(OutDir)%(Filename).lib</OutputFile>
+    </Precomp4C_LibCreate>
+
+    <Precomp4C_LibExtract>
+      <SearchPaths Condition="'%(Precomp4C_LibExtract.SearchPaths)' == ''">$(ProjectDir);$(VCToolsInstallDir)lib\$(PlatformTarget)</SearchPaths>
+      <OutputDirectory Condition="'%(Precomp4C_LibExtract.OutputDirectory)' == ''">$(IntDir)LibExtract</OutputDirectory>
+    </Precomp4C_LibExtract>
+
+    <Precomp4C_Binary2C>
+      <OutputHeader Condition="'%(Precomp4C_Binary2C.OutputHeader)' == ''">%(FullPath).g.h</OutputHeader>
+      <OutputSource Condition="'%(Precomp4C_Binary2C.OutputSource)' == ''">%(FullPath).g.c</OutputSource>
+    </Precomp4C_Binary2C>
+
+    <Precomp4C_I18N>
+      <OutputHeader Condition="'%(Precomp4C_I18N.OutputHeader)' == ''">%(FullPath).g.h</OutputHeader>
+      <OutputSource Condition="'%(Precomp4C_I18N.OutputSource)' == ''">%(FullPath).g.c</OutputSource>
+    </Precomp4C_I18N>
+
+    <ResourceCompile>
+      <P4CEnableRes2C Condition="'%(ResourceCompile.P4CEnableRes2C)' == ''">false</P4CEnableRes2C>
+      <P4COutputHeader Condition="'%(ResourceCompile.P4COutputHeader)' == ''">%(FullPath).g.h</P4COutputHeader>
+      <P4COutputSource Condition="'%(ResourceCompile.P4COutputSource)' == ''">%(FullPath).g.c</P4COutputSource>
+    </ResourceCompile>
+
+  </ItemDefinitionGroup>
+
+</Project>
