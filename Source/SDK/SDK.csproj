@@ -8,4 +8,8 @@
     <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\AlexAdasCca.KNSoft.Precomp4C\Source\3rdParty\C4Lib\Source\C4Lib.csproj" />
+  </ItemGroup>
+
 </Project>
