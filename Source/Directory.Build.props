@@ -41,15 +41,16 @@
         </MASM>
     </ItemDefinitionGroup>
 
-    <!-- Use static runtime libraries -->
+    <!-- Use DLL CRT by default so downstream package managers can compose
+         KNSoft.NDK with regular /MD and /MDd consumers. -->
     <ItemDefinitionGroup Condition="'$(Configuration)' == 'Release'">
         <ClCompile>
-            <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+            <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
         </ClCompile>
     </ItemDefinitionGroup>
     <ItemDefinitionGroup Condition="'$(Configuration)' == 'Debug'">
         <ClCompile>
-            <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+            <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
         </ClCompile>
     </ItemDefinitionGroup>
 
